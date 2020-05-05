@@ -1,4 +1,4 @@
-# Very short description of the package
+# XML to Database
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/oliverbj/databaseupdater.svg?style=flat-square)](https://packagist.org/packages/oliverbj/databaseupdater)
 [![Build Status](https://img.shields.io/travis/oliverbj/databaseupdater/master.svg?style=flat-square)](https://travis-ci.org/oliverbj/databaseupdater)

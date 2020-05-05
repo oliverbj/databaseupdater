@@ -1,34 +1,21 @@
 <?php
 
-/*
- * You can place your custom package configuration in here.
- */
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Database and Table
+    |--------------------------------------------------------------------------
+    |
+    | The default database configuration to connect to.
+    | Please note, this database connection must be configured in config/database.php
+    | 
+    |
+    */
 
     'default' => [
 
-        /*
-        |--------------------------------------------------------------------------
-        | Default Database
-        |--------------------------------------------------------------------------
-        |
-        | The default database configuration to connect to.
-        | Please note, this database connection must be configured in config/database.php
-        |
-        */
-
         'database' => 'Iliad',
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Default Table
-        |--------------------------------------------------------------------------
-        |
-        | The default table to insert / update to.
-        |
-        */
-
         'table' => 'Consols'
     ],
     

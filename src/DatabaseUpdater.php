@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Oliverbj\DatabaseUpdater\ParseXMLFile;
+use Illuminate\Support\Arr;
 
 class DatabaseUpdater
 {
@@ -152,19 +153,30 @@ class DatabaseUpdater
      */
     protected function parse(string $xmlFile) : array
     {
+       
         $xml = \XmlParser::extract($xmlFile);
         $xml = $xml->parse($this->config['Columns']);
+        dd($xml);
+       
+        
 
         foreach($xml as $tag => $value)
         {
-            if(isset($this->config['Columns'][$tag]) && isset($this->config['Columns'][$tag]['default']))
+            if(isset($this->config['Columns'][$tag]))
             {
-                if($xml[$tag] === null){
-                    $xml[$tag] = $this->config['Columns'][$tag]['default'];
+                
+                if(isset($this->config['Columns'][$tag]['index']) && isset($xml[$tag][0]['MasterBill'])){
+                     $xml[$tag] = $xml[$tag][0]['MasterBill'];
+                }       
+                if(isset($this->config['Columns'][$tag]['default'])){
+                    if($xml[$tag] === null){
+                        $xml[$tag] = $this->config['Columns'][$tag]['default'];
+                    }
                 }
             }
         }
-
+        dd($xml);
         return $xml;
     }
+
 }

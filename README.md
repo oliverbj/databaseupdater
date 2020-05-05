@@ -57,6 +57,40 @@ The package is quite simple to get started with. You can specify the `database` 
 ];
 ```
 
+# Multidimensional XML tag parsing
+
+Sometimes you might encounter nested XML tags with the same tag name, where you only need one of the tags. 
+For example in the below example, we might only need the `MasterBill` tag:
+
+```php
+[▼
+  [▼
+    "TransportMasterId" => "CDK439089"
+    "MasterBill" => "172-41625032"
+    "BookingReference" => null
+    "ExternalAgentReference" => "9,00"
+    "PaymentType" => "PPD"
+    "IsCancelled" => "false"
+    "ProcessDirection" => "Export"
+    "GAT" => "dk"
+    "PPC" => "133346862"
+    "Friday Flight" => "false"
+    "Monday Flight" => "false"
+    "Thursday Flight" => "false"
+    "Tuesday Flight" => "false"
+    "Wednesday Flight" => "false"
+  ]
+];
+```
+
+You can specify an `index` key in the config file, like so:
+
+```php
+'master' => ['uses' => 'TransportMaster.TransportMasterReferences[Reference(::Type=@)]', 'index' => 'MasterBill'],
+```
+
+This will ultimately remove all other items in the array, and set `master` to the value of the `MasterBill` tag.
+
 The XML parsing rules is using `orchestra/parser` under the hood, and must be specified in this format. Example:
 
 ```php

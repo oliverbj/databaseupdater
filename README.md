@@ -91,13 +91,23 @@ You can specify an `index` key in the config file, like so:
 
 This will ultimately remove all other items in the array, and set `master` to the value of the `MasterBill` tag.
 
+**Please note, you can only specify an index one level down.**
+
+# Applying parsing rules
+
+You can specify different rules to the XML parser, which will be applied to the specific tag text value. For example:
+
+```php
+  'firstLoadCountry' => ['uses' => 'TransportMaster.TransportStages.Stage[Locations.Location(::Type=Code)]', 'Index' => 'Loading', 'default' => '', 'Rule' => 'substring', 'Arguments' => ['start' => 0, 'end' => 2]],
+```
+
+This will ultimately apply the method `substring($arguments)` to the specific tag value.
+
 The XML parsing rules is using `orchestra/parser` under the hood, and must be specified in this format. Example:
 
 ```php
 'uses' => 'TransportMaster.TransportMasterId', 'default' => 'Blabla'],
 ```
-
-Please note the `default` key is *not* a `orchestra/parser` specific key. With this you can specify what the default value for the specific column should be, if the XML tag is not found / null.
 
 You can export the default config file by running this command:
 

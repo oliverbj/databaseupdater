@@ -17,6 +17,7 @@ class DatabaseUpdater
     private $columns = [];
     private $config;
     private $uniqueValue;
+    private $value = null;
 
     public function __construct()
     {
@@ -101,7 +102,6 @@ class DatabaseUpdater
 
     protected function insertData(array $ColumnAndValues)
     {
-       
         DB::connection($this->database)->table($this->table)->insert($ColumnAndValues);
     }
 
@@ -111,6 +111,11 @@ class DatabaseUpdater
      */
     protected function updateData(array $ColumnAndValues)
     {
+
+        if(isset($ColumnAndValues['CreatedAt'])){
+            unset($ColumnAndValues['CreatedAt']);
+        }
+
         DB::connection($this->database)->table($this->table)->where($this->config['UpdateKey'], $this->UniqueValue)->update($ColumnAndValues);
     }
 
@@ -153,30 +158,63 @@ class DatabaseUpdater
      */
     protected function parse(string $xmlFile) : array
     {
-       
-        $xml = \XmlParser::extract($xmlFile);
-        $xml = $xml->parse($this->config['Columns']);
-        dd($xml);
-       
-        
 
+     
+    
+        $xml = \XmlParser::extract($xmlFile);
+      #  dd($xml);
+        $xml = $xml->parse($this->config['Columns']);
+      #  dd($xml);
         foreach($xml as $tag => $value)
         {
             if(isset($this->config['Columns'][$tag]))
             {
+
                 
-                if(isset($this->config['Columns'][$tag]['index']) && isset($xml[$tag][0]['MasterBill'])){
-                     $xml[$tag] = $xml[$tag][0]['MasterBill'];
-                }       
-                if(isset($this->config['Columns'][$tag]['default'])){
-                    if($xml[$tag] === null){
-                        $xml[$tag] = $this->config['Columns'][$tag]['default'];
+                if(isset($this->config['Columns'][$tag]['Index'])){
+                    $index = $this->config['Columns'][$tag]['Index'];
+                    //We can only go one level down in an array ATM.
+                    if( isset($xml[$tag][0][$index])){
+                        $xml[$tag] = $xml[$tag][0][$index];
+                    }else{
+                        
+                          $xml[$tag] = isset($this->config['Columns'][$tag]['default']) ?  $this->config['Columns'][$tag]['default'] : null;
+                        
+                        
                     }
+                    
                 }
+
+
+                //If any rules.
+                if(isset($this->config['Columns'][$tag]['Rule'])){
+                    $this->value = $xml[$tag];
+                    $arguments = isset($this->config['Columns'][$tag]['Arguments']) ? $this->config['Columns'][$tag]['Arguments'] : [];
+                    $xml[$tag] = $this->{$this->config['Columns'][$tag]['Rule']}($arguments);
+                }
+
+
+
+
             }
         }
-        dd($xml);
+
+
         return $xml;
     }
 
+    /**
+     * Rules
+     */
+     protected function substring(array $arguments)
+     {
+        return substr($this->value, $arguments['start'], $arguments['end']);
+     }
+
+     protected function currentTime()
+     {
+         return \Carbon\Carbon::now()->format('Y-m-d\TH:i:s');
+     }
+
+  
 }

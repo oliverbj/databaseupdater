@@ -20,12 +20,41 @@ composer require oliverbj/databaseupdater
 This package can be used to parse an XML file and add the values directly into a database table.
 
 ``` php
-    use Oliverbj\DatabaseUpdater\Facade;
+use Oliverbj\DatabaseUpdater\Facade;
 
-    \DatabaseUpdater::database('IliadQA')
-                     ->table('Consols')
-                     ->update(['xml' => $this->xml(true), 'UniqueValue' => 'CDK12345678']);
+\DatabaseUpdater::database('IliadQA')
+                 ->table('Consols')
+                 ->update(['xml' => $this->xml(true), 'UniqueValue' => 'CDK12345678']);
 ```
+
+The package is quite simple to get started with. You can specify the `database` and `table` settings in the config file:
+
+```php
+//config/databaseupdater.php
+'databases' => [
+        'IliadQA' => [
+            'tables' => [
+                'Consols' => [
+                    'UpdateKey' => 'consolID',
+                    'Columns' => [
+                        'consolID' => ['uses' => 'TransportMaster.TransportMasterId', 'default' => 'Blabla'],
+                        'firstLeg' => [],
+                        //etc.
+                    ],
+
+                ],
+            ],
+        ],
+];
+```
+
+The XML parsing rules is using `orchestra/parser` under the hood, and must be specified in this format. Example:
+
+```php
+'uses' => 'TransportMaster.TransportMasterId', 'default' => 'Blabla'],
+```
+
+Please note the `default` key is *not* a `orchestra/parser` specific key. With this you can specify what the default value for the specific column should be, if the XML tag is not found / null.
 
 You can export the default config file by running this command:
 

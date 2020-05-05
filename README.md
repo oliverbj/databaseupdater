@@ -22,12 +22,19 @@ This package can be used to parse an XML file and add the values directly into a
 ``` php
 use Oliverbj\DatabaseUpdater\Facade;
 
-\DatabaseUpdater::database('IliadQA')
-                 ->table('Consols')
-                 ->update(['xml' => 'XMLFileString', 'UniqueValue' => 'CDK12345678']);
+\DatabaseUpdater::update(['xml' => 'XMLFileString', 'UniqueValue' => 'CDK12345678']);
 ```
 The update method require two indexes: `xml` and `UniqueValue`. The `xml` should contain the XML file as a string and the `UniqueValue` should contain the value we should check against in the database. 
 
+The default database connection and table from the configuration is used by default, but you can specify your own programmaticaly:
+
+```php
+\DatabaseUpdater::database('IliadQA')
+                  ->table('Consols')
+                  ->update(['xml' => 'XMLFileString', 'UniqueValue' => 'CDK12345678']);
+```
+
+## Configuration
 
 The package is quite simple to get started with. You can specify the `database` and `table` settings in the config file:
 
